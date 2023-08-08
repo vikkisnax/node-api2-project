@@ -3,4 +3,29 @@
 const express = require('express');
 const router = express.Router();
 
-module.exports=router;
+router.get('/', (req,res)=>{
+	//test
+	res.json("test request - foo")
+})
+
+router.get('/:id', (req,res)=>{
+
+})
+
+router.post('/', (req,res)=>{
+
+})
+
+router.put('/:id', (req,res)=>{
+
+})
+
+router.delete('/:id', (req,res)=>{
+
+})
+
+router.get('/:id/comments', (req,res)=>{
+
+})
+
+module.exports=router
