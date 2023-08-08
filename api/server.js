@@ -12,7 +12,7 @@ const server = express();
 //GLOBAL MIDDLEWARE - teaches express how to parse JSON from the request body
 server.use(express.json());
 
-//anything that has \/ will send requests to postsRouter aka delegate requests to posts-router to the router
+//anything that has \/ will send requests to postsRouter aka delegate requests to posts-router to the router itself
 server.use('/api/posts', postsRouter)
 
 //backup-keep endpoint here just to test that api responds
