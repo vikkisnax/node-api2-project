@@ -18,7 +18,7 @@ server.use('/api/posts', postsRouter)
 //backup-keep endpoint here just to test that api responds
 server.use('*', (req, res)=>{
     res.status(404).json({
-        message: 'not found'
+        message: 'SERVER.JS -- not found'
     })
 })
 
