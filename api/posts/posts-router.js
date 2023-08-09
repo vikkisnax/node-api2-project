@@ -39,9 +39,31 @@ router.get('/:id', async (req, res)=>{
 }
 })
 
-
-router.post('/posts', (req,res)=>{
-
+router.post('/', (req,res)=>{
+    const {title, contents} = req.body;
+    // console.log('post:', req.body) // shows what we put in title and contents
+    if(!title || !contents){
+        res.status(400).json({
+            message: "Please provide title and contents for the post"
+        })
+    }else{
+        console.log('success')
+        Post.insert({title, contents})
+            .then(({id})=>{
+                return Post.findById(id)
+            })
+            //since we returned a promise ^^ we can chain another then
+            .then(post=>{
+                res.status(201).json(post)
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err.message,
+                    message: "The post information could not be modified",
+                    stack: err.stack
+                })
+            })
+    }
 })
 
 router.put('/:id', (req,res)=>{
