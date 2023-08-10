@@ -1,6 +1,7 @@
 // implement your posts-router here: express, router, data
 const express = require('express');
 const Post = require('./posts-model');
+const { error } = require('console');
 const router = express.Router();
 
 router.get('/', (req,res)=>{
@@ -46,13 +47,13 @@ router.post('/', (req,res)=>{
         res.status(400).json({
             message: "Please provide title and contents for the post"
         })
-    }else{
-        console.log('success')
+    } else {
+        // console.log('success')
         Post.insert({title, contents})
-            .then(({id})=>{
+            .then(({ id }) => {
                 return Post.findById(id)
             })
-            //since we returned a promise ^^ we can chain another then
+            //since we returned a promise ^^ we can chain another one
             .then(post=>{
                 res.status(201).json(post)
             })
@@ -66,11 +67,27 @@ router.post('/', (req,res)=>{
     }
 })
 
+router.delete('/:id', async (req,res)=>{
+    try{
+        const post = await Post.findById(req.params.id)
+        if (!post){
+            res.status(404).json({
+                message: "The post with the specified ID does not exist",
+            })
+        } else {
+            await Post.remove(req.params.id)
+            res.json(post)
+        }
+    } catch (err) {
+        res.status(500).json({
+            error: err.message,
+            message: "The user could not be removed",
+            stack: err.stack,
+            })
+        }
+})  
+
 router.put('/:id', (req,res)=>{
-
-})
-
-router.delete('/:id', (req,res)=>{
 
 })
 
