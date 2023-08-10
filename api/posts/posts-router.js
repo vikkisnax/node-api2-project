@@ -88,11 +88,63 @@ router.delete('/:id', async (req,res)=>{
 })  
 
 router.put('/:id', (req,res)=>{
-
+    const { title, contents } = req.body;
+    if (!title || !contents) {
+        res.status(400).json({
+            message: "Please provide title and contents for the post"
+        })
+    } else {
+        //get the id that's in the link
+        Post.findById(req.params.id)
+            //does that id have anything stuff/info?
+            .then(stuff =>{
+                if (!stuff){
+                    res.status(404).json({
+                        message: "The post with the specified ID does not exist",
+                    })
+                // id does have stuff -- params needed based on the model 'update' code
+                } else {
+                    return Post.update(req.params.id, req.body)
+                }
+            })
+            //this is what's being returned inside Post.update
+            .then(data =>{
+                if (data) {
+                    return Post.findById(req.params.id)
+                }
+            })
+            .then(post =>{
+                //return the post that was updated
+                res.json(post)
+            })
+            .catch (err => {
+                res.status(500).json({
+                    message: "The posts information could not be retrieved",
+                    err: err.message,
+                    stack: err.stack,
+                })
+            })
+    }
 })
 
-router.get('/:id/comments', (req,res)=>{
-
+router.get('/:id/comments', async (req,res)=>{
+    try{
+        const post = await Post.findById(req.params.id)
+        if (!post){
+            res.status(404).json({
+                message: "The post with the specified ID does not exist",
+            })
+        } else {
+            //get messages from comment
+            const messages = await Post.findPostComments(req.params.id)
+            //console.log('messages:', messages) // it's an array
+            res.json(messages)
+        }
+    } catch(err){
+        res.status(500).json({
+            message: "The comments information could not be retrieved",
+        })
+    }
 })
 
 module.exports=router
